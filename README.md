@@ -1,0 +1,2 @@
+# Possess
+A JavaScript function interceptor that enables you to monitor and control the execution flow at each stage of a function's lifecycle, such as before execution, during execution, and after completion.

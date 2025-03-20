@@ -1,0 +1,36 @@
+{
+	"name": "possess",
+	"version": "1.0.1",
+	"description": "A JavaScript function interceptor that enables you to monitor and control the execution flow at each stage of a function's lifecycle, such as before execution, during execution, and after completion.",
+	"module": "src/index.ts",
+	"type": "module",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"keywords": [
+		"javascript",
+		"typescript",
+		"function",
+		"patcher",
+		"intercept",
+		"interceptor"
+	],
+	"files": [
+		"dist/*.js",
+		"dist/*.d.ts"
+	],
+	"scripts": {
+		"build": "rollup -c"
+	},
+	"devDependencies": {
+		"@types/bun": "latest"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	},
+	"dependencies": {
+		"@rollup/plugin-typescript": "^12.1.2",
+		"rollup": "^4.36.0",
+		"rollup-plugin-dts": "^6.2.0",
+		"rollup-plugin-swc3": "^0.12.1"
+	}
+}
