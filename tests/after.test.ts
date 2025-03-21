@@ -20,20 +20,19 @@ describe('after patches', () => {
 		unpatch();
 	});
 
-	// This only hangs in the bun testing environment for some reason (?)
-	// it('should modify the result through context', (ctx) => {
-	// 	let result = exampleModule.exampleFunction('Bob');
+	it('should modify the result through context', () => {
+		let result = exampleModule.exampleFunction('Bob');
 
-	// 	expect(result).toBe('Hello Bob!');
+		expect(result).toBe('Hello Bob!');
 
-	// 	const unpatch = after(exampleModule, 'exampleFunction', (ctx) => {
-	// 		ctx.result = 'Overriden';
-	// 	});
+		const unpatch = after(exampleModule, 'exampleFunction', (ctx) => {
+			ctx.result = 'Overriden';
+		});
 
-	// 	result = exampleModule.exampleFunction('Jeff');
+		result = exampleModule.exampleFunction('Jeff');
 
-	// 	expect(result).toBe('Overriden');
+		expect(result).toBe('Overriden');
 
-	// 	unpatch();
-	// });
+		unpatch();
+	});
 });

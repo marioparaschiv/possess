@@ -2,7 +2,7 @@
 - Docs
 
 # In Progress
-- Test Suite
 
 # Done
+- Test Suite
 - Implementation
