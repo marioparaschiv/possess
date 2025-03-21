@@ -27,6 +27,7 @@ export interface PatchOptions {
 
 export interface PatchCallbackContext {
 	original: AnyFunction;
+	this: any;
 	result: any;
 	args: any[];
 }
@@ -42,5 +43,5 @@ export type AnyObject = Record<any, any>;
 export type AnyFunction = (...args: any[]) => any;
 export type AnyConstructor = { new(...args: any): any; };
 export type PropOf<M> = {
-	[K in keyof M]: M[K] extends AnyFunction ? Extract<K, string> : never
+	[K in keyof M]: M[K] extends AnyFunction | AnyConstructor ? Extract<K, string> : never
 }[keyof M];

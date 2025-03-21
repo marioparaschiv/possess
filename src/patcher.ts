@@ -109,6 +109,7 @@ function createOverride(patch: PatchedModule) {
 	function override(this: any, ...args: any[]) {
 		const ctx: PatchCallbackContext = {
 			result: null,
+			this: this,
 			args,
 			original: (...args: any[]) => {
 				if (new.target) {
