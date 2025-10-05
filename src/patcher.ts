@@ -54,7 +54,9 @@ export function unpatchAllByCaller(caller: string) {
 }
 
 function patch<M extends PatchParent, P extends PropOf<M>>(type: PatchType, parent: M, method: P, callback: PatchCallback, options: PatchOptions) {
-	if (!parent[method]) throw new Error(`The function you provided does not exist on the parent object.`);
+	if (!parent[method] || typeof parent[method] !== 'function') {
+		throw new Error(`The prop you provided does not exist on the parent object or is not a function.`);
+	}
 
 	const mdl = getPatchedModule(parent, method);
 	const original: any = parent[method];
