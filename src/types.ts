@@ -5,11 +5,7 @@ export interface PatchedModule {
 	parent: WeakRef<PatchParent>;
 	method: PatchMethod;
 	original: AnyFunction & AnyConstructor;
-	patches: {
-		[PatchType.Before]: Set<Patch<any, any, any>>,
-		[PatchType.Instead]: Set<Patch<any, any, any>>,
-		[PatchType.After]: Set<Patch<any, any, any>>;
-	};
+	patches: Record<PatchType, Set<Patch<any, any, any>>>;
 }
 
 export type PatchParent = AnyFunction | AnyObject;

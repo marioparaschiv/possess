@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 
-import { after, before, createPatcher, type AnyFunction } from "../src";
+import { after, before, createPatcher, instead, unpatchAll, type AnyFunction } from "../src";
 
 
 describe('unpatches', () => {
@@ -49,6 +49,27 @@ describe('unpatches', () => {
 		expect(result).toBe('Hello Jeff!!');
 
 		unpatches.map(u => u());
+
+		result = exampleModule.exampleFunction('Bob');
+
+		expect(result).toBe('Hello Bob!');
+	});
+
+	it('should unpatch all patches globally', () => {
+		const patcher1 = createPatcher('caller-1');
+		const patcher2 = createPatcher('caller-2');
+
+		// Add patches from different callers
+		patcher1.before(exampleModule, 'exampleFunction', (ctx) => (ctx.args[0] = `Modified ${ctx.args[0]}`));
+		patcher2.after(exampleModule, 'exampleFunction', (ctx) => ctx.result = ctx.result + '!');
+		instead(exampleModule, 'exampleFunction', (ctx) => `Completely different result`);
+
+		let result = exampleModule.exampleFunction('Bob');
+
+		expect(result).toBe('Completely different result!');
+
+		// Remove ALL patches globally
+		unpatchAll();
 
 		result = exampleModule.exampleFunction('Bob');
 

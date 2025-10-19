@@ -39,6 +39,22 @@ export function createPatcher(defaultOptions: string | PatchOptions): PatcherIns
 	};
 };
 
+export function unpatchAll() {
+	const patchesCopy = [...patches];
+
+	for (const patchedModule of patchesCopy) {
+		for (const type in patchedModule.patches) {
+			const store = patchedModule.patches[type as unknown as PatchType];
+			if (!store.size) continue;
+
+			const patchList = [...store.values()];
+			for (const patch of patchList) {
+				unpatch(type as unknown as PatchType, patchedModule, patch);
+			}
+		}
+	}
+}
+
 export function unpatchAllByCaller(caller: string) {
 	for (const patch of patches) {
 		for (const type in patch.patches) {
