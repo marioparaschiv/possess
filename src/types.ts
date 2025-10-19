@@ -38,6 +38,12 @@ export interface PatcherInstance {
 export type AnyObject = Record<any, any>;
 export type AnyFunction = (...args: any[]) => any;
 export type AnyConstructor = { new(...args: any): any; };
-export type PropOf<M> = {
-	[K in keyof M]: M[K] extends AnyFunction | AnyConstructor ? Extract<K, string> : never
-}[keyof M];
+
+// Helper to detect if a type is `any`
+type IsAny<T> = 0 extends (1 & T) ? true : false;
+
+export type PropOf<M> = IsAny<M> extends true
+	? string
+	: {
+		[K in keyof M]: M[K] extends AnyFunction | AnyConstructor ? Extract<K, string> : never
+	}[keyof M];
