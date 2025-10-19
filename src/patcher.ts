@@ -1,4 +1,4 @@
-import type { AnyObject, PatchCallback, PatchCallbackContext, PatchedModule, PatchParent, PropOf, PatchOptions, Patch, PatcherInstance } from './types';
+import type { AnyObject, PatchCallback, PatchContext, PatchedModule, PatchParent, PropOf, PatchOptions, Patch, PatcherInstance } from './types';
 
 
 export const PATCH_SYMBOL = Symbol.for('$$patched$$');
@@ -12,15 +12,15 @@ export enum PatchType {
 
 export const patches: PatchedModule[] = [];
 
-export function before<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions = {}) {
+export function before<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
 	return patch(PatchType.Before, parent, method, callback, options);
 }
 
-export function instead<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions = {}) {
+export function instead<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
 	return patch(PatchType.Instead, parent, method, callback, options);
 }
 
-export function after<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions = {}) {
+export function after<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
 	return patch(PatchType.After, parent, method, callback, options);
 }
 
@@ -69,13 +69,13 @@ export function unpatchAllByCaller(caller: string) {
 	}
 }
 
-function patch<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(type: PatchType, parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions) {
-	if (!parent[method] || typeof parent[method] !== 'function') {
+function patch<M extends PatchParent, P extends PropOf<M>>(type: PatchType, parent: M, method: P, callback: PatchCallback, options: PatchOptions) {
+	if (!(parent as any)[method] || typeof (parent as any)[method] !== 'function') {
 		throw new Error(`The prop you provided does not exist on the parent object or is not a function.`);
 	}
 
 	const mdl = getPatchedModule(parent, method);
-	const original: any = parent[method];
+	const original: any = (parent as any)[method];
 
 	// Override method if it isn't already.
 	if (!original[PATCH_SYMBOL]) {
@@ -125,7 +125,7 @@ function unpatch(type: PatchType, mdl: PatchedModule, patch: Patch) {
 
 function createOverride(patch: PatchedModule) {
 	function override(this: any, ...args: any[]) {
-		const ctx: PatchCallbackContext = {
+		const ctx: PatchContext = {
 			result: null,
 			this: this,
 			args,
