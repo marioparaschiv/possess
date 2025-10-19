@@ -12,15 +12,42 @@ export enum PatchType {
 
 export const patches: PatchedModule[] = [];
 
-export function before<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
+export function before<M extends PatchParent, P extends PropOf<M>>(
+	parent: M,
+	method: P,
+	callback: PatchCallback<
+		M[P] extends (...args: infer Args) => any ? Args : any[],
+		M[P] extends (...args: any[]) => infer Res ? Res : any,
+		unknown extends ThisParameterType<M[P]> ? M : ThisParameterType<M[P]>
+	>,
+	options: PatchOptions = {}
+) {
 	return patch(PatchType.Before, parent, method, callback, options);
 }
 
-export function instead<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
+export function instead<M extends PatchParent, P extends PropOf<M>>(
+	parent: M,
+	method: P,
+	callback: PatchCallback<
+		M[P] extends (...args: infer Args) => any ? Args : any[],
+		M[P] extends (...args: any[]) => infer Res ? Res : any,
+		unknown extends ThisParameterType<M[P]> ? M : ThisParameterType<M[P]>
+	>,
+	options: PatchOptions = {}
+) {
 	return patch(PatchType.Instead, parent, method, callback, options);
 }
 
-export function after<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
+export function after<M extends PatchParent, P extends PropOf<M>>(
+	parent: M,
+	method: P,
+	callback: PatchCallback<
+		M[P] extends (...args: infer Args) => any ? Args : any[],
+		M[P] extends (...args: any[]) => infer Res ? Res : any,
+		unknown extends ThisParameterType<M[P]> ? M : ThisParameterType<M[P]>
+	>,
+	options: PatchOptions = {}
+) {
 	return patch(PatchType.After, parent, method, callback, options);
 }
 
@@ -69,7 +96,17 @@ export function unpatchAllByCaller(caller: string) {
 	}
 }
 
-function patch<M extends PatchParent, P extends PropOf<M>>(type: PatchType, parent: M, method: P, callback: PatchCallback, options: PatchOptions) {
+function patch<M extends PatchParent, P extends PropOf<M>>(
+	type: PatchType,
+	parent: M,
+	method: P,
+	callback: PatchCallback<
+		M[P] extends (...args: infer Args) => any ? Args : any[],
+		M[P] extends (...args: any[]) => infer Res ? Res : any,
+		unknown extends ThisParameterType<M[P]> ? M : ThisParameterType<M[P]>
+	>,
+	options: PatchOptions
+) {
 	if (!(parent as any)[method] || typeof (parent as any)[method] !== 'function') {
 		throw new Error(`The prop you provided does not exist on the parent object or is not a function.`);
 	}
@@ -93,7 +130,7 @@ function patch<M extends PatchParent, P extends PropOf<M>>(type: PatchType, pare
 	const patch = {
 		callback,
 		...options
-	} as Patch;
+	} as unknown as Patch;
 
 	store.add(patch);
 
