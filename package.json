@@ -1,6 +1,6 @@
 {
 	"name": "possess",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "A JavaScript function & class interceptor that enables you to monitor and control the execution flow at each stage of the functions/class lifecycle, such as before execution, during execution, and after completion.",
 	"module": "src/index.ts",
 	"type": "module",

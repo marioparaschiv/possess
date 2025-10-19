@@ -21,7 +21,7 @@ export interface PatchOptions {
 	caller?: string;
 }
 
-export interface PatchContext<Args extends any[] = any[], Res = any, Self = any> {
+export interface PatchContext<in out Args extends any[] = any[], out Res = any, out Self = any> {
 	original: (...args: Args) => Res;
 	this: Self;
 	result: Res | null;
