@@ -6,18 +6,18 @@ export interface PatchedModule {
 	method: PatchMethod;
 	original: AnyFunction & AnyConstructor;
 	patches: {
-		[PatchType.Before]: Set<Patch>,
-		[PatchType.Instead]: Set<Patch>,
-		[PatchType.After]: Set<Patch>;
+		[PatchType.Before]: Set<Patch<any, any, any>>,
+		[PatchType.Instead]: Set<Patch<any, any, any>>,
+		[PatchType.After]: Set<Patch<any, any, any>>;
 	};
 }
 
 export type PatchParent = AnyFunction | AnyObject;
 export type PatchMethod = string;
-export type PatchCallback = (ctx: PatchCallbackContext) => any;
+export type PatchCallback<Args extends any[] = any[], Res = any, Self = any> = (ctx: PatchCallbackContext<Args, Res, Self>) => any;
 
-export interface Patch extends PatchOptions {
-	callback: PatchCallback;
+export interface Patch<Args extends any[] = any[], Res = any, Self = any> extends PatchOptions {
+	callback: PatchCallback<Args, Res, Self>;
 }
 
 export interface PatchOptions {
@@ -25,11 +25,11 @@ export interface PatchOptions {
 	caller?: string;
 }
 
-export interface PatchCallbackContext {
-	original: AnyFunction;
-	this: any;
-	result: any;
-	args: any[];
+export interface PatchCallbackContext<Args extends any[] = any[], Res = any, Self = any> {
+	original: (...args: Args) => Res;
+	this: Self;
+	result: Res | null;
+	args: Args;
 }
 
 export interface PatcherInstance {

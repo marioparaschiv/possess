@@ -12,15 +12,15 @@ export enum PatchType {
 
 export const patches: PatchedModule[] = [];
 
-export function before<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
+export function before<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions = {}) {
 	return patch(PatchType.Before, parent, method, callback, options);
 }
 
-export function instead<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
+export function instead<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions = {}) {
 	return patch(PatchType.Instead, parent, method, callback, options);
 }
 
-export function after<M extends PatchParent, P extends PropOf<M>>(parent: M, method: P, callback: PatchCallback, options: PatchOptions = {}) {
+export function after<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions = {}) {
 	return patch(PatchType.After, parent, method, callback, options);
 }
 
@@ -53,7 +53,7 @@ export function unpatchAllByCaller(caller: string) {
 	}
 }
 
-function patch<M extends PatchParent, P extends PropOf<M>>(type: PatchType, parent: M, method: P, callback: PatchCallback, options: PatchOptions) {
+function patch<Args extends any[] = any[], Res = any, Self = any, M extends PatchParent = PatchParent, P extends PropOf<M> = PropOf<M>>(type: PatchType, parent: M, method: P, callback: PatchCallback<Args, Res, Self>, options: PatchOptions) {
 	if (!parent[method] || typeof parent[method] !== 'function') {
 		throw new Error(`The prop you provided does not exist on the parent object or is not a function.`);
 	}
@@ -77,7 +77,7 @@ function patch<M extends PatchParent, P extends PropOf<M>>(type: PatchType, pare
 	const patch = {
 		callback,
 		...options
-	};
+	} as Patch;
 
 	store.add(patch);
 
