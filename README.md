@@ -82,14 +82,15 @@ instead(api, 'greet', (ctx) => {
   return `Goodbye ${ctx.args[0]}!`;
 });
 
-// Delegate to original
+// Delegate to original, preserving this and args
 instead(api, 'greet', (ctx) => {
-  return ctx.original(...ctx.args);
+  return ctx.original.apply(ctx.this, ctx.args);
 });
 
 // Modify arguments, then delegate
 instead(api, 'greet', (ctx) => {
-  return ctx.original(ctx.args[0].toUpperCase());
+  ctx.args[0] = ctx.args[0].toUpperCase();
+  return ctx.original.apply(ctx.this, ctx.args);
 });
 ```
 
