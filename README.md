@@ -203,8 +203,8 @@ const module = {
 };
 
 // Modify constructor arguments
-before(module, 'User', (ctx) => {
-  ctx.args[0] = ctx.args[0].toUpperCase();
+before(module, 'User', () => {
+  return ['Jeff'];
 });
 
 // Intercept construction
@@ -216,7 +216,8 @@ instead(module, 'User', (ctx) => {
 
 // Modify the instance after construction
 after(module, 'User', (ctx) => {
-  ctx.result.name = ctx.result.name + ' (patched)';
+  ctx.result.name = ctx.result.name.toUpperCase();
+  return ctx.result;
 });
 ```
 
