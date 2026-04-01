@@ -186,6 +186,44 @@ before(api, 'greet', (ctx) => {
 }, { once: true });
 ```
 
+## Type inference
+
+Types are inferred automatically from the parent object. Given a typed module, `ctx.args`, `ctx.result`, and `ctx.this` are all fully typed without any extra work:
+
+```typescript
+import { before, after } from 'possess';
+
+const api = {
+  getUser(id: number): { name: string; age: number } {
+    return { name: 'Alice', age: 30 };
+  }
+};
+
+before(api, 'getUser', (ctx) => {
+  ctx.args;    // [id: number]
+  ctx.this;    // typeof api
+});
+
+after(api, 'getUser', (ctx) => {
+  ctx.result;  // { name: string; age: number } | null (null in before/instead, populated in after)
+});
+```
+
+If you need to type the callback separately (e.g. when defining it outside the patch call), use `PatchContext` directly:
+
+```typescript
+import { before, type PatchContext } from 'possess';
+
+function logArgs(ctx: PatchContext<[id: number], { name: string; age: number }>) {
+  console.log('id:', ctx.args[0]);    // number
+  console.log('result:', ctx.result); // { name: string; age: number } | null
+}
+
+before(api, 'getUser', logArgs);
+```
+
+The three type parameters are `PatchContext<Args, Result, Self>`, all optional and default to `any`.
+
 ## Class patching
 
 Same API, works with constructors:
