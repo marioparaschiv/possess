@@ -1,7 +1,7 @@
 {
 	"name": "possess",
 	"version": "1.0.9",
-	"description": "A JavaScript function & class interceptor that enables you to monitor and control the execution flow at each stage of the functions/class lifecycle, such as before execution, during execution, and after completion.",
+	"description": "Structured monkey-patching for JavaScript and TypeScript. Hook into any function or constructor with before, instead, and after patches.",
 	"module": "dist/index.mjs",
 	"type": "module",
 	"main": "dist/index.mjs",
