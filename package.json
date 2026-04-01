@@ -2,38 +2,57 @@
 	"name": "possess",
 	"version": "1.0.9",
 	"description": "A JavaScript function & class interceptor that enables you to monitor and control the execution flow at each stage of the functions/class lifecycle, such as before execution, during execution, and after completion.",
-	"module": "src/index.ts",
+	"module": "dist/index.mjs",
 	"type": "module",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "dist/index.mjs",
+	"types": "dist/index.d.mts",
+	"exports": {
+		".": {
+			"import": "./dist/index.mjs",
+			"types": "./dist/index.d.mts"
+		}
+	},
+	"sideEffects": false,
 	"keywords": [
 		"javascript",
 		"typescript",
 		"function",
 		"patcher",
+		"monkey-patch",
+		"hook",
 		"classes",
 		"intercept",
-		"interceptor"
+		"interceptor",
+		"proxy",
+		"before",
+		"after",
+		"instead",
+		"aop",
+		"aspect"
 	],
 	"files": [
-		"dist/*.js",
-		"dist/*.d.ts"
+		"dist/*.mjs",
+		"dist/*.d.mts"
 	],
+	"license": "GPL-3.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/marioparaschiv/possess.git"
+	},
+	"homepage": "https://github.com/marioparaschiv/possess#readme",
+	"bugs": {
+		"url": "https://github.com/marioparaschiv/possess/issues"
+	},
 	"scripts": {
 		"prepare": "bun run build",
-		"build": "rollup -c",
+		"build": "tsdown",
 		"test": "bun test"
 	},
 	"devDependencies": {
-		"@types/bun": "latest"
+		"@types/bun": "latest",
+		"tsdown": "latest"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
-	},
-	"dependencies": {
-		"@rollup/plugin-typescript": "^12.1.2",
-		"rollup": "^4.36.0",
-		"rollup-plugin-dts": "^6.2.0",
-		"rollup-plugin-swc3": "^0.12.1"
 	}
 }
