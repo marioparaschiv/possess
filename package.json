@@ -1,6 +1,6 @@
 {
 	"name": "possess",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"description": "Structured monkey-patching for JavaScript and TypeScript. Hook into any function or constructor with before, instead, and after patches.",
 	"module": "dist/index.mjs",
 	"type": "module",
