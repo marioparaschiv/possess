@@ -1,8 +1,9 @@
 import type { PatchType } from './patcher';
+import type { ParentRef } from './env';
 
 
 export interface PatchedModule {
-	parent: WeakRef<PatchParent>;
+	parent: ParentRef;
 	method: PatchMethod;
 	original: AnyFunction & AnyConstructor;
 	patches: Record<PatchType, Set<Patch<any, any, any>>>;

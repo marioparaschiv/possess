@@ -1,4 +1,5 @@
 import type { AnyObject, PatchCallback, PatchContext, PatchedModule, PatchParent, PropOf, PatchOptions, Patch, PatcherInstance } from './types';
+import { createParentRef, randomUUID } from './env';
 
 
 export const PATCH_SYMBOL = Symbol.for('$$patched$$');
@@ -56,7 +57,7 @@ export function createPatcher(defaultOptions: string | PatchOptions): PatcherIns
 		defaultOptions = { caller: defaultOptions };
 	}
 
-	defaultOptions.caller ??= crypto.randomUUID();
+	defaultOptions.caller ??= randomUUID();
 
 	return {
 		instead: (parent, method, callback, options = {}) => instead(parent, method, callback, { ...defaultOptions, ...options }),
@@ -251,8 +252,9 @@ function getPatchedModule<M extends AnyObject, P extends PropOf<M>>(parent: M, m
 function createPatchedModule<M extends AnyObject, P extends PropOf<M>>(parent: M, method: P): PatchedModule {
 	return {
 		method,
-		// Use a WeakRef so our patcher does not prevent the garbage collector from cleaning up the parent object.
-		parent: new WeakRef(parent),
+		// Use a WeakRef (or a strong-ref fallback where WeakRef is unavailable) so the patcher does
+		// not, by itself, prevent the garbage collector from cleaning up the parent object.
+		parent: createParentRef(parent),
 		original: parent[method],
 		patches: {
 			[PatchType.Before]: new Set(),
