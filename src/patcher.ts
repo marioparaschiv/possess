@@ -89,7 +89,7 @@ export function unpatchAllByCaller(caller: string) {
 			const store = patch.patches[type as unknown as PatchType];
 			if (!store.size) continue;
 
-			const matched = store.values().filter(p => p.caller === caller);
+			const matched = [...store.values()].filter(p => p.caller === caller);
 			for (const match of matched) {
 				unpatch(type as unknown as PatchType, patch, match);
 			}

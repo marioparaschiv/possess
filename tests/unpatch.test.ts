@@ -21,6 +21,24 @@ describe('unpatches', () => {
 		expect(result).toBe('Hello Bob!');
 	});
 
+	it('should unpatch all patches by a caller without iterator helpers', () => {
+		const iteratorPrototype = Object.getPrototypeOf(Object.getPrototypeOf(new Set().values()));
+		const filter = Object.getOwnPropertyDescriptor(iteratorPrototype, 'filter');
+		const patcher = createPatcher('example-caller');
+
+		patcher.before(exampleModule, 'exampleFunction', (ctx) => (ctx.args[0] = `Modified ${ctx.args[0]}`));
+		patcher.after(exampleModule, 'exampleFunction', (ctx) => ctx.result = ctx.result.slice(0, ctx.result.length - 1));
+
+		delete iteratorPrototype.filter;
+
+		try {
+			expect(() => patcher.unpatchAll()).not.toThrow();
+			expect(exampleModule.exampleFunction('Bob')).toBe('Hello Bob!');
+		} finally {
+			if (filter) Object.defineProperty(iteratorPrototype, 'filter', filter);
+		}
+	});
+
 	it('should remove a singular patch', () => {
 		const patcher = createPatcher('example-caller');
 
